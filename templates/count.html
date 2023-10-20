@@ -1,0 +1,15 @@
+{{ define "TotalCount" }}
+  <p id="total" {{ if .SwapOOB }}hx-swap-oob="innerHTML:#total"{{ end }}>
+    Total tasks:
+    {{ .Count }}
+  </p>
+{{ end }}
+
+{{ define "CompletedCount" }}
+  <p
+    id="completed"
+    {{ if .SwapOOB }}hx-swap-oob="innerHTML:#completed"{{ end }}
+  >
+    Completed tasks: {{ .Count }}
+  </p>
+{{ end }}
