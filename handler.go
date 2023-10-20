@@ -70,3 +70,39 @@ func handleToggleTask(w http.ResponseWriter, r *http.Request) {
 	}
 	tmpl.ExecuteTemplate(w, "CompletedCount", map[string]any{"Count": completedCount, "SwapOOB": true})
 }
+
+func handleDeleteTask(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		log.Printf("error parsing id into int %v", err)
+		return
+	}
+	err = deleteTask(r.Context(), id)
+	if err != nil {
+		log.Printf("error deleting task %v", err)
+	}
+	count, err := fetchCount()
+	if err != nil {
+		log.Printf("error fetching count %v", err)
+	}
+	completedCount, err := fetchCompletedCount()
+	if err != nil {
+		log.Printf("error fetching completed count %v", err)
+	}
+	tmpl.ExecuteTemplate(w, "TotalCount", map[string]any{"Count": count, "SwapOOB": true})
+	tmpl.ExecuteTemplate(w, "CompletedCount", map[string]any{"Count": completedCount, "SwapOOB": true})
+}
+
+func handleEditTask(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		log.Printf("error parsing id into int %v", err)
+		return
+	}
+	task, err := fetchTask(id)
+	if err != nil {
+		log.Printf("error fetching task with id %d %v", id, err)
+		return
+	}
+	tmpl.ExecuteTemplate(w, "Item", map[string]any{"Item": task, "Editing": true})
+}
